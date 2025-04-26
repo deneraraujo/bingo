@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bingo da Helô</title>
+  <meta charset="UTF-8">
+  <style type="text/css">
+	@font-face {
+		font-family:nickainley;
+		src:url(nickainley.otf);
+	}
+	* {
+		-webkit-print-color-adjust:exact !important;   /* Chrome, Safari 6 – 15.3, Edge */
+		color-adjust:exact !important;                 /* Firefox 48 – 96 */
+		print-color-adjust:exact !important;           /* Firefox 97+, Safari 15.4+ */
+	}
+	@media print
+	{
+		@page {
+			size:landscape;
+			margin:0mm;
+		}
+		html
+		{
+			zoom: 75%;
+		}
+	}
+	body {
+		margin:0;
+		text-align:center;
+	}
+	.card {
+		border:1px solid #f9ae9d;
+		display:inline-block;
+		font-family:Calibri;
+		margin:110px 45px;
+		padding:20px 20px 5px 20px;
+		position:relative;
+		text-align:center;
+	}
+	.card:before {
+		background-image:url(flowers.png);
+		background-size:400px;
+		content:'';
+		height:100%;
+		left:0;
+		opacity:0.2;
+		position:absolute;
+		top:0;
+		width:100%;
+		z-index: -1;
+	}
+	.card .header {
+		color:#ff9a92;
+		font-family:nickainley;
+		position:relative;
+	}
+	.card .header h2 {
+		display:table;
+		font-size:58pt;
+		margin:0 auto;
+		text-shadow: 1px 1px 1px #545454;
+	}
+	.card .header h3 {
+		display:table;
+		font-size:28pt;
+		margin:0 auto 20px auto;
+		text-shadow: 0.5px 0.5px 0.5px #545454;
+	}
+	.card table {
+		margin:0 auto;
+		table-layout:fixed;
+	}
+	.card td {
+		box-sizing:border-box;
+		padding:2px;
+		text-align:center;
+	}
+	.card td.middle {
+		background-color:#fff;
+	}
+	.card td.middle img {
+		opacity:0.7;
+	}
+	.card td span {
+		background-color:#fff;
+		border:1px solid #f9ae9d;
+		border-radius:10px;
+		color:#545454;
+		display:table-cell;
+		font-size:20pt;
+		font-weight:bold;
+		height:110px;
+		margin:0 auto;
+		text-align:center;
+		vertical-align:middle;
+		width:110px;
+		max-width:110px;
+		text-transform:uppercase;
+	}
+	.card td img {
+		height:100px;
+		width:100px;
+	}
+	.id {
+		text-align:right;
+		padding:5px;
+		font-size:12pt;
+	}
+  </style>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+	// Settings
+	const title = "Bingo";
+	const subtitle = "----- Chá de Bebê -----";
+	const cards = 10;
+	const cells = 24;
+	const skipMiddle = true;
+	const maxValue = 75;
+	
+	var sqrt;
+	init();
+
+	function init() {
+		sqrt = Math.ceil(Math.sqrt(cells + (skipMiddle ? 1 : 0)));
+		sqrt += skipMiddle && sqrt % 2 == 0 ? 1 : 0;
+		var total = sqrt**2;
+		var skip = skipMiddle ? Math.ceil(total/2) : -1;
+		
+		var values = [];
+		for (var i = 1; i <= maxValue; i++) {
+			values.push(i);
+		}
+		
+		for (var i = 0; i < cards; i++) {
+			var t = 0;
+			var v = 0;
+			var filter = values;
+
+			var card = document.createElement('section');
+			card.className = "card";
+			document.body.appendChild(card);
+			
+			var header = document.createElement('div');
+			header.className = "header";
+			card.appendChild(header);
+			
+			var label = document.createElement('h2');
+			label.innerHTML = title;
+			header.appendChild(label);
+			
+			var label2 = document.createElement('h3');
+			label2.innerHTML = subtitle;
+			header.appendChild(label2);
+			
+			var table = document.createElement('table');
+			card.appendChild(table);
+			
+			for (var j = 0; j < sqrt; j++) {
+				var newRow = table.insertRow();
+				
+				for (var k = 0; k < sqrt; k++) {
+					var cell = newRow.insertCell(k);
+					t++;
+
+					if (v < cells && t != skip) {
+						const value = filter.length > 0 ? drawValue(filter, k+1) : "";
+						cell.innerHTML = `<span>${value}</span>`;
+						filter = filter.filter(e => e !== value);
+						v++;
+					}
+					
+					if (t == skip) {
+						cell.innerHTML = "<img src='flower.png' />";
+						cell.className = "middle";
+					}
+				}
+			}
+			
+			// Footer
+			var id = document.createElement('div');
+			id.className = "id";
+			id.innerHTML = `<span>${pad(i+1, 5)}</span>`;
+			card.appendChild(id);
+		}
+	}
+	
+	function drawValue(values, column) {
+		const max = (maxValue / sqrt) * column;
+		const min = max - (maxValue / sqrt) + 1;
+		const available = values.filter(e => e >= min && e <= max);
+		const r = Math.floor(Math.random() * available.length);
+		return available[r];
+	}
+	
+	function pad(num, size) {
+		var s = `000000000${num}`;
+		return s.substr(s.length-size);
+	}
+</script>
+</html> 

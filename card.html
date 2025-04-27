@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bingo da Helô</title>
+  <title>Bingo</title>
   <meta charset="UTF-8">
   <style type="text/css">
 	@font-face {
@@ -32,7 +32,7 @@
 		border:1px solid #f9ae9d;
 		display:inline-block;
 		font-family:Calibri;
-		margin:110px 45px;
+		margin:60px 45px;
 		padding:20px 20px 5px 20px;
 		position:relative;
 		text-align:center;
@@ -63,7 +63,7 @@
 	.card .header h3 {
 		display:table;
 		font-size:28pt;
-		margin:0 auto 20px auto;
+		margin:0 auto;
 		text-shadow: 0.5px 0.5px 0.5px #545454;
 	}
 	.card table {
@@ -97,6 +97,15 @@
 		max-width:110px;
 		text-transform:uppercase;
 	}
+	.card td.card-header {
+		padding-bottom:0;
+		padding-top:0;
+	}
+	.card td.card-header span {
+		background-color:transparent;
+		border:none;
+		font-size:40pt;
+	}
 	.card td img {
 		height:100px;
 		width:100px;
@@ -118,6 +127,7 @@
 	const cells = 24;
 	const skipMiddle = true;
 	const maxValue = 75;
+	const cardHeader = ["B", "I", "N", "G", "O"];
 	
 	var sqrt;
 	init();
@@ -157,6 +167,18 @@
 			var table = document.createElement('table');
 			card.appendChild(table);
 			
+			// First row (card header)
+			var headerRow = table.insertRow();
+			for (var j = 0; j < sqrt; j++) {
+				var cell = headerRow.insertCell(j);
+				cell.className = "card-header";
+				
+				if (j < cardHeader.length) {
+					cell.innerHTML = `<span>${cardHeader[j]}</span>`;
+				}
+			}
+			
+			// Rows
 			for (var j = 0; j < sqrt; j++) {
 				var newRow = table.insertRow();
 				
